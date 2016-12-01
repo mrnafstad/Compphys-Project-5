@@ -23,6 +23,8 @@ int main ( int argc, char * argv[] )
 
 	vector<planet> cluster;
 
+	solver system_VV;
+
 	for ( int i = 0; i <= N; i++) {
 		R = ran1(&idum)*R0;
 		theta = ran1(&idum)*2*M_PI;
@@ -35,8 +37,11 @@ int main ( int argc, char * argv[] )
 
 		planet thistest( mass, x, y, z, vx, vy, vz );
 		cluster.push_back( thistest );
+		system_VV.add( thistest );
 	}
 
+	system_VV.velVerlet( dim, dt, final_time, energy, stationary, relativity, MercPeri);
 
-
+	
+	return 0;
 }
