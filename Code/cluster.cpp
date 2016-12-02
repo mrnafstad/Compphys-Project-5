@@ -14,6 +14,10 @@ using namespace std;
 
 int main ( int argc, char * argv[] )
 {
+	bool stationary = false;
+	bool energy = false;
+	bool relativity = false;
+	bool MercPeri = false;
 	//NB N is now the number of initial bodies, dt is the number of integration points!
 	int dim = 3, dt = atoi(argv[1]), N = atoi(argv[2]);
 	long idum = -1;
