@@ -38,20 +38,31 @@ double gaussian_deviate(long * idum)
 
 int main ( int argc, char * argv[] )
 {
-	bool energy = false;
 
 	//NB N is now the number of initial bodies, dt is the number of integration points!
-	int dim = 3, dt = atoi(argv[1]), N = atoi(argv[2]);
+	int dim = 3, N;
 	long idum = -1;
 
-	double final_time =  atof(argv[3]), R0 = atof(argv[4]), M0 = 1.0;
-	double mass, R, x, y, z, theta, phi, vx = 0, vy = 0, vz = 0;
+	double M0 = 1.0, final_time, dt, R0, mass, R, x, y, z, theta, phi, vx = 0, vy = 0, vz = 0;
+
+	if(argc < 5){
+		printf("Bad usage, cml arguments: dt N final_time R0\n");
+		return 0;
+	}
+	else{
+		dt = atof(argv[1]);
+		N = atoi(argv[2]);
+		final_time =  atof(argv[3]);
+		R0 = atof(argv[4]);
+	}
+
+	bool energy = false;
 
 	vector<planet> cluster;
 
 	solver system_VV;
 
-	for ( int i = 0; i <= N; i++) {
+	for ( int i = 0; i < N; i++) {
 		R = ran1(&idum)*R0;
 		theta = ran1(&idum)*2*M_PI;
 		phi = ran1(&idum)*M_PI;
@@ -67,8 +78,10 @@ int main ( int argc, char * argv[] )
 		system_VV.add( thistest );
 	}
 
-	system_VV.velVerlet( dim, dt, final_time, energy);
+	printf("Total galaxies: %i\n", system_VV.total_planets);
 
+	system_VV.velVerlet( dim, dt, final_time, N, energy);
+	printf("%lf\n", system_VV.all_planets[0].position[0]);
 	
 	return 0;
 }

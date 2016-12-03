@@ -29,7 +29,7 @@ public:
 	void Gravitiationalconstant();
 	void add(planet newPlanet);
 	void addM(planet newPlanet);
-    void velVerlet(int dim, int N, double final_time, bool energy);
+    void velVerlet(int dim, double dt, double final_time, int N, bool energy);
     void GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz);
     void KineticEnergySystem();
     void PotentialEnergySystem(double epsilon);

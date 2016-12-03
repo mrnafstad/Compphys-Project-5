@@ -43,10 +43,9 @@ void solver::addM(planet newplanet)
     all_planets.push_back(newplanet);
 }
 
-void solver::velVerlet( int dim, int N, double final_time, bool energy)
+void solver::velVerlet( int dim, double dt, double final_time, int N, bool energy)
 {
 	double time = 0.0;      // Sets looping variable 
-	double h = final_time/(double)N;   // step length
 
 	double Fx, Fy, Fz, Fx_new, Fy_new, Fz_new;
 	double acc[3];
@@ -59,7 +58,6 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy)
 	int counter = 0; 
 
 	if(energy) printf("Time       Total Kinetic Energy  Total Potential Energy  Total Angular Momentum\n");
-
 
 	clock_t start, finish;
 	double proc_time;
@@ -76,6 +74,8 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy)
 		for (int j = 0; j < total_planets; j++ ) {
 			planet &thisplanet = all_planets[j];
 
+			fprintf(fp, "%f %f %f ", thisplanet.position[0], thisplanet.position[1], thisplanet.position[2]);
+
 			Fx = 0; Fy = 0; Fz = 0;
 			
 
@@ -90,7 +90,7 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy)
 			acc[0] = Fx/thisplanet.mass; acc[1] = Fy/thisplanet.mass; acc[2] = Fz/thisplanet.mass;
 
 			for(int i = 0; i < dim; i++){
-				thisplanet.position[i] += h*thisplanet.velocity[i] + 0.5*acc[i]*h*h;
+				thisplanet.position[i] += dt*thisplanet.velocity[i] + 0.5*acc[i]*dt*dt;
 			}
 			
 			Fx_new = 0; Fy_new = 0; Fz_new = 0;		
@@ -105,10 +105,8 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy)
 			acc_new[0] = Fx_new/thisplanet.mass; acc_new[1] = Fy_new/thisplanet.mass; acc_new[2] = Fz_new/thisplanet.mass;
 
 			for(int i = 0; i < dim; i++){
-				thisplanet.velocity[i] += 0.5*(acc[i] + acc_new[i])*h;
+				thisplanet.velocity[i] += 0.5*(acc[i] + acc_new[i])*dt;
 			}
-
-			fprintf(fp, "%f %f %f ", thisplanet.position[0], thisplanet.position[1], thisplanet.position[2]);
 		}
 
 		fprintf(fp, "\n");
@@ -125,9 +123,9 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy)
 		}
 
 		//Makes sure that the energy above only prints every 1/10th iteration 
-		counter += 1;
-		if(N/counter == 10) counter = 0;
-		time += h;
+		//counter += 1;
+		//if(N/counter == 10) counter = 0;
+		time += dt;
 
 	}
 	finish = clock();  // stopping timer
