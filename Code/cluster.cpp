@@ -10,14 +10,36 @@
 #include "lib.h"
 using namespace std;
 
+// random numbers with gaussian distribution 
+double gaussian_deviate(long * idum) 
+{ 
+	static int iset = 0; 
+	static double gset; 
+	double fac, rsq, v1, v2;
+
+	if ( idum < 0) iset =0; 
+	if (iset == 0) { 
+		do { 
+			v1 = 2.*ran2(idum) -1.0; 
+			v2 = 2.*ran2(idum) -1.0; 
+			rsq = v1*v1+v2*v2; 
+		} while (rsq >= 1.0 || rsq == 0.); 
+		fac = sqrt(-2.*log(rsq)/rsq);
+		gset = v1*fac; 
+		iset = 1; 
+		return v2*fac; 
+	} 	else { 
+		iset =0; 
+		return gset; 
+	} 
+} // end function for gaussian deviates
+
 
 
 int main ( int argc, char * argv[] )
 {
-	bool stationary = false;
 	bool energy = false;
-	bool relativity = false;
-	bool MercPeri = false;
+
 	//NB N is now the number of initial bodies, dt is the number of integration points!
 	int dim = 3, dt = atoi(argv[1]), N = atoi(argv[2]);
 	long idum = -1;
@@ -37,14 +59,15 @@ int main ( int argc, char * argv[] )
 		y = R*sin(theta)*sin(phi);
 		z = R*cos(phi);
 
-		mass = ran1(&idum);
+		mass = gaussian_deviate(&idum) + 10;
+		printf("%lf %lf %lf %lf\n", mass, x, y, z);
 
 		planet thistest( mass, x, y, z, vx, vy, vz );
 		cluster.push_back( thistest );
 		system_VV.add( thistest );
 	}
 
-	system_VV.velVerlet( dim, dt, final_time, energy, stationary, relativity, MercPeri);
+	system_VV.velVerlet( dim, dt, final_time, energy);
 
 	
 	return 0;

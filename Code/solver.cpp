@@ -43,45 +43,23 @@ void solver::addM(planet newplanet)
     all_planets.push_back(newplanet);
 }
 
-void solver::velVerlet( int dim, int N, double final_time, bool energy, bool stationary, bool relativity, bool MercPeri)
+void solver::velVerlet( int dim, int N, double final_time, bool energy)
 {
 	double time = 0.0;      // Sets looping variable 
 	double h = final_time/(double)N;   // step length
-
-	planet &sun = all_planets[0];   // Fetches the sun object
 
 	double Fx, Fy, Fz, Fx_new, Fy_new, Fz_new;
 	double acc[3];
 	double acc_new[3];
 
-	//Initiates helping variables for use in MercuryPerihelion()
-	double rPreviousPrevious = 0;
-	double rPrevious = 0;
-	double previousPosition[3] = {0, 0, 0};
-
-	// Opening files
-	FILE *fp, *per;
-	if(!MercPeri) fp = fopen("VerletTest.txt", "w+");
-	else per = fopen("MercuryPerihelion.txt", "w+"); 
-
+	// Opening file
+	FILE *fp;
+	fp = fopen("VerletTest.txt", "w+");
 
 	int counter = 0; 
 
 	if(energy) printf("Time       Total Kinetic Energy  Total Potential Energy  Total Angular Momentum\n");
 
-
-	//Sets initial values for the sun if we're using center of mass as the origin
-	int j, k;
-	if(stationary) j = 1;
-	else {
-		j = 0;
-		for ( int i = 1; i < total_planets; i++ ) {
-			for (int k = 0; k < dim; k++ ) {
-				planet &thisother = all_planets[i];
-				sun.velocity[k] -= thisother.velocity[k]*thisother.mass/sun.mass;
-			}
-		}
-	}
 
 	clock_t start, finish;
 	double proc_time;
@@ -92,32 +70,19 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy, bool sta
 	//Starts loop
 	while(time < final_time){
 
-		//Writes to file if MercPeri = false
-		if(!MercPeri) fprintf(fp, "%f ", time);
-
-		if(stationary) j = 1;
-		else j = 0;
+		fprintf(fp, "%f ", time);
 		
 		// Computes the gravitatonal forces between all planets in the system
-		for ( j; j < total_planets; j++ ) {
+		for (int j = 0; j < total_planets; j++ ) {
 			planet &thisplanet = all_planets[j];
-
-			// Computers the perihelion of the orbit of Mercury
-			if(MercPeri) MercuryPerihelion(thisplanet, sun, rPreviousPrevious, rPrevious, previousPosition, time, per);
 
 			Fx = 0; Fy = 0; Fz = 0;
 			
 
-			if (stationary) {
-				GravitationalForce(thisplanet, sun, Fx, Fy, Fz, relativity);
-				k = 1;
-			}
-			else k = 0;
-
-			for ( k; k < total_planets; k++ ) {
+			for (int k = 0; k < total_planets; k++ ) {
 				if ( k != j ) {
 					planet other_planet = all_planets[k];
-					GravitationalForce( thisplanet, other_planet, Fx, Fy, Fz, relativity );
+					GravitationalForce( thisplanet, other_planet, Fx, Fy, Fz);
 				}
 
 			}
@@ -128,17 +93,12 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy, bool sta
 				thisplanet.position[i] += h*thisplanet.velocity[i] + 0.5*acc[i]*h*h;
 			}
 			
-			Fx_new = 0; Fy_new = 0; Fz_new = 0;
-			if (stationary) {
-				GravitationalForce(thisplanet, sun, Fx_new, Fy_new, Fz_new, relativity);
-				k = 1;
-			}
-			else k = 0;			
+			Fx_new = 0; Fy_new = 0; Fz_new = 0;		
 			
-			for ( k; k < total_planets; k++ ) {
+			for ( int k = 0; k < total_planets; k++ ) {
 				if ( k != j ) {
 					planet other_planet = all_planets[k];
-					GravitationalForce( thisplanet, other_planet, Fx_new, Fy_new, Fz_new, relativity );
+					GravitationalForce( thisplanet, other_planet, Fx_new, Fy_new, Fz_new);
 				}
 
 			}
@@ -148,11 +108,10 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy, bool sta
 				thisplanet.velocity[i] += 0.5*(acc[i] + acc_new[i])*h;
 			}
 
-			// Prints position to file if not computing Mercury Perihelion
-			if(!MercPeri) fprintf(fp, "%f %f %f ", thisplanet.position[0], thisplanet.position[1], thisplanet.position[2]);
+			fprintf(fp, "%f %f %f ", thisplanet.position[0], thisplanet.position[1], thisplanet.position[2]);
 		}
 
-		if(!MercPeri) fprintf(fp, "\n");
+		fprintf(fp, "\n");
 
 
 		// Prints energies to screen if required
@@ -175,62 +134,12 @@ void solver::velVerlet( int dim, int N, double final_time, bool energy, bool sta
 	proc_time = ( (double) (finish - start)/CLOCKS_PER_SEC);
 	printf("Time spent on algorithm: %f seconds\n", proc_time);
 
-	//closes files
-	if(!MercPeri) fclose(fp);
-	else fclose(per);
-}
-
-
-void solver::ForwardEuler( int dim, int N, double final_time, bool relativity)
-{
-	double time = 0.0;     // Sets the looping variable
-	double h = final_time/(double)N;  // step length
-
-	//Fetches the sun and earth objects
-	planet &earth = all_planets[1];   
-	planet &sun = all_planets[0];
-
-	double Fx, Fy, Fz;
-	double acc[3];
-
-	// Opens file to write positions to
-	FILE *fp;
-	fp = fopen("EulerTest.txt", "w+");
-	fprintf(fp, "%f %f %f %f\n", time, earth.position[0], earth.position[1], earth.position[2]);
-
-	clock_t start, finish;
-	double proc_time;
-
-	start = clock(); // Starting timer
-	while(time < final_time){
-
-		//Computing forces and acceleration
-		Fx = 0, Fy = 0, Fz = 0;
-		GravitationalForce(earth, sun, Fx, Fy, Fz, relativity);
-
-		acc[0] = Fx/earth.mass; acc[1] = Fy/earth.mass; acc[2] = Fz/earth.mass;
-
-		//Forward Euler
-		for(int i = 0; i < dim; i++){
-
-			earth.position[i] += h*earth.velocity[i];
-			earth.velocity[i] += h*acc[i];
-		}
-		fprintf(fp, "%f %f %f %f\n", time, earth.position[0], earth.position[1], earth.position[2]);
-			
-		time += h; // updates loop variable
-	}
-
-	finish = clock(); // stops timer
-	proc_time = ((double) (finish - start)/CLOCKS_PER_SEC);
-
-	printf("Time spent on algorithm: %f seconds.\n", proc_time);
-
+	//closes file
 	fclose(fp);
-		
 }
 
-void solver::GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz, bool relativity){   // Function that calculates the gravitational force between two objects, component by component.
+
+void solver::GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz){   // Function that calculates the gravitational force between two objects, component by component.
 
     // Calculate relative distance between current planet and all other planets
     double relative_distance[3];
@@ -243,14 +152,6 @@ void solver::GravitationalForce(planet &current, planet &other, double &Fx, doub
     Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r));
     Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r));
 
-    if(relativity){
-    	//Adds the relativistic correction if required
-    	double angmom2 = current.AngularMomentum()*current.AngularMomentum()/(current.mass*current.mass);
-    	double c = 63197.8;  //Speed of light AU/yr
-    	Fx *= (1 + 3*angmom2/(r*r*c*c));
-    	Fy *= (1 + 3*angmom2/(r*r*c*c));
-    	Fz *= (1 + 3*angmom2/(r*r*c*c));
-    }
 }
 
 void solver::KineticEnergySystem()
@@ -288,24 +189,4 @@ void solver::AngularMomentumSystem(){
         Current.ang_mom = Current.AngularMomentum();
         totalAngularMomentum += Current.ang_mom;
     }
-}
-
-void solver::MercuryPerihelion(planet &thisplanet, planet &sun, double &rPreviousPrevious, double &rPrevious, double previousPosition[], double time, FILE *per){
-	double rCurrent = thisplanet.distance(sun);
-
-	//Checks if the planet is at perihelion by checking if the previous distance to the sun
-	// is shorter than the ones in the previousprevious and the current iterations
-	if( rCurrent > rPrevious && rPrevious < rPreviousPrevious){
-		double x = previousPosition[0];
-		double y = previousPosition[1];
-		printf("Time: %f, Perihelion angle: %f rad = %f ''\n", time, atan2(y,x), atan2(y,x)*648000/M_PI);
-		fprintf(per, "Time: %f, Perihelion angle: %f rad = %f ''\n", time, atan2(y,x), atan2(y,x)*648000/M_PI);
-	}
-
-	//Updates variables 
-	rPreviousPrevious = rPrevious;
-	rPrevious = rCurrent;
-	for(int i = 0; i < 3; i++){
-		previousPosition[i] = thisplanet.position[i];
-	}
 }
