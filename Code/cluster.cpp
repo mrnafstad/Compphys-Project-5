@@ -60,7 +60,7 @@ int main ( int argc, char * argv[] )
 
 	vector<planet> cluster;
 
-	solver system_VV;
+	solver system_VV(R0);
 
 	for ( int i = 0; i < N; i++) {
 		R = ran1(&idum)*R0;
@@ -80,6 +80,7 @@ int main ( int argc, char * argv[] )
 
 	printf("Total galaxies: %i\n", system_VV.total_planets);
 
+	system_VV.GravitationalConstant();
 	system_VV.velVerlet( dim, dt, final_time, N, energy);
 	printf("%lf\n", system_VV.all_planets[0].position[0]);
 	

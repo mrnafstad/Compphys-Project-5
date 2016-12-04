@@ -26,7 +26,7 @@ public:
 	solver( double radii );
 
 	//functions;
-	void Gravitiationalconstant();
+	void GravitationalConstant();
 	void add(planet newPlanet);
 	void addM(planet newPlanet);
     void velVerlet(int dim, double dt, double final_time, int N, bool energy);

@@ -43,6 +43,11 @@ void solver::addM(planet newplanet)
     all_planets.push_back(newplanet);
 }
 
+void solver::GravitationalConstant()
+{
+	G = (4*M_PI*M_PI/32)*radius*radius*radius/total_mass;
+}
+
 void solver::velVerlet( int dim, double dt, double final_time, int N, bool energy)
 {
 	double time = 0.0;      // Sets looping variable 
