@@ -143,9 +143,10 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
         planet &Current = all_planets[nr];
         if(Current.kinetic + Current.potential < 0.0){
             lost_particles += 1;
-            printf("We have lost %i object(s) \n", lost_particles);
+            if ( lost_particles == 1) printf("We have lost an object! \n");
         }
     }
+    printf("We have lost %i object(s) \n", lost_particles);
 	//closes file
 	fclose(fp);
 }
