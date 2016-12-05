@@ -62,16 +62,19 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 
 	int counter = 0; 
 
-	if(energy) printf("Time       Total Kinetic Energy  Total Potential Energy  Total Angular Momentum\n");
+	if(energy) printf("Time       Total Kinetic Energy  Total Potential Energy    Total Energy\n");
 
 	clock_t start, finish;
 	double proc_time;
+
+	int lost_particles = 0;
 
 	start = clock(); // starts timer
 
 
 	//Starts loop
 	while(time < final_time){
+
 
 		fprintf(fp, "%f ", time);
 		
@@ -123,20 +126,26 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 				KineticEnergySystem();
 				PotentialEnergySystem(0.0);
 				AngularMomentumSystem();
-				printf("%f      %e        %e            %e\n", time, totalKinetic, totalPotential, totalAngularMomentum);
+				printf("%f      %e        %e            %e\n", time, totalKinetic, totalPotential, totalPotential+totalKinetic);
 			}
 		}
 
 		//Makes sure that the energy above only prints every 1/10th iteration 
-		//counter += 1;
-		//if(N/counter == 10) counter = 0;
+		counter += 1;
+		if(N/counter == 10) counter = 0;
 		time += dt;
 
 	}
 	finish = clock();  // stopping timer
 	proc_time = ( (double) (finish - start)/CLOCKS_PER_SEC);
 	printf("Time spent on algorithm: %f seconds\n", proc_time);
-
+    for(int nr=0;nr<total_planets;nr++){
+        planet &Current = all_planets[nr];
+        if(Current.kinetic + Current.potential < 0.0){
+            lost_particles += 1;
+            printf("We have lost %i object(s) \n", lost_particles);
+        }
+    }
 	//closes file
 	fclose(fp);
 }

@@ -56,7 +56,7 @@ int main ( int argc, char * argv[] )
 		R0 = atof(argv[4]);
 	}
 
-	bool energy = false;
+	bool energy = true;
 
 	vector<planet> cluster;
 
@@ -71,7 +71,7 @@ int main ( int argc, char * argv[] )
 		z = R*cos(phi);
 
 		mass = gaussian_deviate(&idum) + 10;
-		printf("%lf %lf %lf %lf\n", mass, x, y, z);
+		//printf("%lf %lf %lf %lf\n", mass, x, y, z);
 
 		planet thistest( mass, x, y, z, vx, vy, vz );
 		cluster.push_back( thistest );
@@ -82,7 +82,7 @@ int main ( int argc, char * argv[] )
 
 	system_VV.GravitationalConstant();
 	system_VV.velVerlet( dim, dt, final_time, N, energy);
-	printf("%lf\n", system_VV.all_planets[0].position[0]);
+	//printf("%lf\n", system_VV.all_planets[0].position[0]);
 	
 	return 0;
 }
