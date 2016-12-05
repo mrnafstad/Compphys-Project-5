@@ -78,7 +78,7 @@ int main ( int argc, char * argv[] )
 		system_VV.add( thistest );
 	}
 
-	printf("Total galaxies: %i\n", system_VV.total_planets);
+	printf("Total stars: %i\n", system_VV.total_planets);
 
 	system_VV.GravitationalConstant();
 	system_VV.velVerlet( dim, dt, final_time, N, energy);
