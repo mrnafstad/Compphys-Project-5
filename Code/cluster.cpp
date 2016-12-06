@@ -36,31 +36,37 @@ double gaussian_deviate(long * idum)
 
 void density_profile( solver allplanets, double shell_size, double R0 )
 {
-	double thisshell, massthis;
+	int thisshell, total = 0;
+	double massthis;
 	double r = 0;
 	FILE *dens;
 	dens = fopen("density_profile.txt", "w+");
 
-	while ( r <= R0) {
+	while ( r < R0) {
 		thisshell = 0;
 		massthis = 0;
+		//std::cout << allplanets.total_planets << std::endl;
 
 		for ( int i = 0; i <= allplanets.total_planets; i++ ) {
 			planet thisplanet = allplanets.all_planets[i];
+
 			double radius = 0, rad;
 
 			for (int j = 0; j < 3; j++) radius += thisplanet.position[j]*thisplanet.position[j];
 			rad  = sqrt(radius);
+			//std:cout << rad << std::endl;
 
 			if ( (rad > r) && (rad < r + shell_size) ) {
 				thisshell += 1;
 				massthis += thisplanet.mass;
 			}
-		fprintf(dens, "%f %lf \n", r, thisshell);
-		r += shell_size;
 		}
+		total += thisshell;
+		fprintf(dens, "%f %i \n", r, thisshell);
+		r += shell_size;
 	
 	}
+	std::cout << total << std::endl;
 	fclose(dens);
 }
 
@@ -90,12 +96,11 @@ int main ( int argc, char * argv[] )
 
 	solver system_VV(R0);
 
-	long idum2 = -2, idum3 = -3;
 
 	for ( int i = 0; i < N; i++) {
-		R = ran0(&idum)*R0;
-		theta = ran1(&idum2)*2*M_PI;
-		phi = ran2(&idum3)*M_PI;
+		R = ran1(&idum)*R0;
+		theta = ran1(&idum)*2*M_PI;
+		phi = ran1(&idum)*M_PI;
 		x = R*cos(theta)*sin(phi);
 		y = R*sin(theta)*sin(phi);
 		z = R*cos(phi);
