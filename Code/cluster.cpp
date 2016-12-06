@@ -36,32 +36,38 @@ double gaussian_deviate(long * idum)
 
 void density_profile( solver allplanets, double shell_size, double R0 )
 {
-	int thisshell;
+	int thisshell, total = 0;
 	double massthis;
 	double r = 0;
 	FILE *dens;
 	dens = fopen("density_profile.txt", "w+");
 
-	while ( r <= R0) {
+	while ( r < R0) {
 		thisshell = 0;
 		massthis = 0;
+		//std::cout << allplanets.total_planets << std::endl;
 
 		for ( int i = 0; i <= allplanets.total_planets; i++ ) {
 			planet thisplanet = allplanets.all_planets[i];
+
 			double radius = 0, rad;
 
 			for (int j = 0; j < 3; j++) radius += thisplanet.position[j]*thisplanet.position[j];
 			rad  = sqrt(radius);
+			//std:cout << rad << std::endl;
 
 			if ( (rad > r) && (rad < r + shell_size) ) {
 				thisshell += 1;
 				massthis += thisplanet.mass;
 			}
 		}
+
+		total += thisshell;
 		fprintf(dens, "%f %i \n", r, thisshell);
 		r += shell_size;
 	
 	}
+	std::cout << total << std::endl;
 	fclose(dens);
 }
 
