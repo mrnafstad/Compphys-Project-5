@@ -46,14 +46,14 @@ int main ( int argc, char * argv[] )
 	double M0 = 1.0, final_time, dt, R0, mass, R, x, y, z, theta, phi, vx = 0, vy = 0, vz = 0;
 
 	if(argc < 5){
-		printf("Bad usage, cml arguments: dt N final_time R0\n");
+		printf("Bad usage, cml arguments: N R0 final_time \n");
 		return 0;
 	}
 	else{
-		dt = atof(argv[1]);
-		N = atoi(argv[2]);
+		dt = atof(argv[4]);
+		N = atoi(argv[1]);
 		final_time =  atof(argv[3]);
-		R0 = atof(argv[4]);
+		R0 = atof(argv[2]);
 	}
 
 	bool energy = true;
@@ -63,7 +63,7 @@ int main ( int argc, char * argv[] )
 	solver system_VV(R0);
 
 	for ( int i = 0; i < N; i++) {
-		R = ran1(&idum)*R0;
+		R = ran1(&idum)*R0
 		theta = ran1(&idum)*2*M_PI;
 		phi = ran1(&idum)*M_PI;
 		x = R*cos(theta)*sin(phi);
