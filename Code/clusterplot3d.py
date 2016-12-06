@@ -22,7 +22,7 @@ for line in f:
 	for i in range(galaxies):
 		x[i] = float(words[3*i +1])
 		y[i] = float(words[3*i +2])
-		z[i] = float(words[3*i +2])
+		z[i] = float(words[3*i +3])
 
 	ax.cla()
 	ax.plot(x,y, z, 'o')

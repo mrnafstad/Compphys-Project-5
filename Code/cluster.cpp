@@ -43,7 +43,7 @@ int main ( int argc, char * argv[] )
 	int dim = 3, N;
 	long idum = -1;
 
-	double M0 = 1.0, final_time, dt, R0, mass, R, x, y, z, theta, phi, vx = 0, vy = 0, vz = 0;
+	double final_time, dt, R0, mass, R, x, y, z, theta, phi, vx = 0, vy = 0, vz = 0;
 
 	if(argc < 5){
 		printf("Bad usage, cml arguments: N R0 final_time \n");
@@ -57,15 +57,16 @@ int main ( int argc, char * argv[] )
 	}
 
 	bool energy = true;
-
-	vector<planet> cluster;
+	bool smoothing = true;
 
 	solver system_VV(R0);
 
+	long idum2 = -2, idum3 = -3;
+
 	for ( int i = 0; i < N; i++) {
-		R = ran1(&idum)*R0
-		theta = ran1(&idum)*2*M_PI;
-		phi = ran1(&idum)*M_PI;
+		R = ran0(&idum)*R0;
+		theta = ran1(&idum2)*2*M_PI;
+		phi = ran2(&idum3)*M_PI;
 		x = R*cos(theta)*sin(phi);
 		y = R*sin(theta)*sin(phi);
 		z = R*cos(phi);
@@ -74,14 +75,13 @@ int main ( int argc, char * argv[] )
 		//printf("%lf %lf %lf %lf\n", mass, x, y, z);
 
 		planet thistest( mass, x, y, z, vx, vy, vz );
-		cluster.push_back( thistest );
 		system_VV.add( thistest );
 	}
 
 	printf("Total stars: %i\n", system_VV.total_planets);
 
 	system_VV.GravitationalConstant();
-	system_VV.velVerlet( dim, dt, final_time, N, energy);
+	system_VV.velVerlet( dim, dt, final_time, N, energy, smoothing);
 	//printf("%lf\n", system_VV.all_planets[0].position[0]);
 	
 	return 0;

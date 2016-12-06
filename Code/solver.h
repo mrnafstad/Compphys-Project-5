@@ -29,8 +29,8 @@ public:
 	void GravitationalConstant();
 	void add(planet newPlanet);
 	void addM(planet newPlanet);
-    void velVerlet(int dim, double dt, double final_time, int N, bool energy);
-    void GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz);
+    void velVerlet(int dim, double dt, double final_time, int N, bool energy, bool smoothing);
+    void GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz, bool smoothing);
     void KineticEnergySystem();
     void PotentialEnergySystem(double epsilon);
     void AngularMomentumSystem();

@@ -48,7 +48,7 @@ void solver::GravitationalConstant()
 	G = (4*M_PI*M_PI/32)*radius*radius*radius/total_mass;
 }
 
-void solver::velVerlet( int dim, double dt, double final_time, int N, bool energy)
+void solver::velVerlet( int dim, double dt, double final_time, int N, bool energy, bool smoothing)
 {
 	double time = 0.0;      // Sets looping variable 
 
@@ -90,7 +90,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 			for (int k = 0; k < total_planets; k++ ) {
 				if ( k != j ) {
 					planet other_planet = all_planets[k];
-					GravitationalForce( thisplanet, other_planet, Fx, Fy, Fz);
+					GravitationalForce( thisplanet, other_planet, Fx, Fy, Fz, smoothing);
 				}
 
 			}
@@ -106,7 +106,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 			for ( int k = 0; k < total_planets; k++ ) {
 				if ( k != j ) {
 					planet other_planet = all_planets[k];
-					GravitationalForce( thisplanet, other_planet, Fx_new, Fy_new, Fz_new);
+					GravitationalForce( thisplanet, other_planet, Fx_new, Fy_new, Fz_new, smoothing);
 				}
 
 			}
@@ -141,7 +141,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 	printf("Time spent on algorithm: %f seconds\n", proc_time);
     for(int nr=0;nr<total_planets;nr++){
         planet &Current = all_planets[nr];
-        if(Current.kinetic + Current.potential < 0.0){
+        if(Current.kinetic + Current.potential > 0.0){
             lost_particles += 1;
             if ( lost_particles == 1) printf("We have lost an object! \n");
         }
@@ -152,18 +152,27 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 }
 
 
-void solver::GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz){   // Function that calculates the gravitational force between two objects, component by component.
+void solver::GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz, bool smoothing){   // Function that calculates the gravitational force between two objects, component by component.
 
     // Calculate relative distance between current planet and all other planets
     double relative_distance[3];
+    double epsilon = 0.1;
 
     for(int j = 0; j < 3; j++) relative_distance[j] = current.position[j]-other.position[j];
     double r = current.distance(other);
 
-    // Calculate the forces in each direction
-    Fx -= this->G*current.mass*other.mass*relative_distance[0]/((r*r*r));
-    Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r));
-    Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r));
+	if(smoothing){
+	    // Calculate the forces in each direction
+	    Fx -= this->G*current.mass*other.mass*relative_distance[0]/((r*r*r) + epsilon*epsilon);
+	    Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r) + epsilon*epsilon);
+	    Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r) + epsilon*epsilon);
+	}
+	else{
+			    // Calculate the forces in each direction
+	    Fx -= this->G*current.mass*other.mass*relative_distance[0]/((r*r*r));
+	    Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r));
+	    Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r));
+	}
 
 }
 
