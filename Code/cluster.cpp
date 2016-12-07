@@ -84,8 +84,10 @@ void virial ( solver allplanets )
 		else lost += 1;
 	}
 	double boundplanets = N - lost;
+	std::cout << lost << std::endl;
 
-	printf("%f %f \n", (double)2*kav/boundplanets, (double)uav/boundplanets);
+	printf("%f %f \n", (double)kav/boundplanets, -(double)uav/(double)boundplanets/2.0/2.0);
+	//We divide by 2.0 twice, once for the virial theorem, and once since all potential energies is counted twice
 }
 
 int main ( int argc, char * argv[] )
