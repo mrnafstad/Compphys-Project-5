@@ -13,6 +13,7 @@ planet::planet()
     potential = 0.;
     kinetic = 0.;
     ang_mom = 0.;
+    bound = true;
 }
 
 planet::planet(double M, double x, double y, double z, double vx, double vy, double vz)
@@ -27,6 +28,7 @@ planet::planet(double M, double x, double y, double z, double vx, double vy, dou
     potential = 0.;
     kinetic = 0.;
     ang_mom = 0.;
+    bound = true;
 }
 
 

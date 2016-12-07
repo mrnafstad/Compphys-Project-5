@@ -30,6 +30,6 @@ for line in f:
 	ax.set_ylim([-20, 20])
 	ax.set_zlim([-20, 20])
 	ax.legend(["t = %.2f" % t])
-	pause(0.01)
+	pause(0.001)
 
 f.close()

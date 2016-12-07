@@ -68,6 +68,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 	double proc_time;
 
 	int lost_particles = 0;
+	double lost_energy = 0;
 
 	start = clock(); // starts timer
 
@@ -138,15 +139,20 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 	}
 	finish = clock();  // stopping timer
 	proc_time = ( (double) (finish - start)/CLOCKS_PER_SEC);
+	
 	printf("Time spent on algorithm: %f seconds\n", proc_time);
+    
     for(int nr=0;nr<total_planets;nr++){
         planet &Current = all_planets[nr];
         if(Current.kinetic + Current.potential > 0.0){
             lost_particles += 1;
-            if ( lost_particles == 1) printf("We have lost an object! \n");
+            Current.bound = false;
+            lost_energy += Current.kinetic + Current.potential;
+            if ( lost_particles == 1) printf("We have lost an object, and it cost us %e total energy! \n", lost_energy);
         }
     }
     printf("We have lost %i object(s) \n", lost_particles);
+    printf("%i lost objects cost us %e ", lost_particles, lost_energy);
 	//closes file
 	fclose(fp);
 }

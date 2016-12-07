@@ -18,6 +18,7 @@ public:
 	double potential;
 	double kinetic;
 	double ang_mom;
+	bool bound;
 
 	//initializers
 	planet();
