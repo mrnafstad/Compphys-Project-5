@@ -71,6 +71,22 @@ void density_profile( solver allplanets, double shell_size, double R0 )
 	fclose(dens);
 }
 
+void virial ( solver allplanets )
+{
+	double kav = 0, uav = 0;
+	int N = allplanets.total_planets, lost = 0;
+	for ( int i = 0; i < N; i++ ) {
+		planet thisplanet = allplanets.all_planets[i];
+		if ( thisplanet.bound ) {
+			kav += thisplanet.kinetic;
+			uav += thisplanet.potential;
+		}
+		else lost += 1;
+	}
+	double boundplanets = N - lost;
+
+	printf("%f %f \n", (double)2*kav/boundplanets, (double)uav/boundplanets);
+}
 
 int main ( int argc, char * argv[] )
 {
@@ -119,5 +135,6 @@ int main ( int argc, char * argv[] )
 	system_VV.velVerlet( dim, dt, final_time, N, energy, smoothing);
 	//printf("%lf\n", system_VV.all_planets[0].position[0]);
 	density_profile( system_VV, shell_size, R0);
+	virial(system_VV);
 	return 0;
 }
