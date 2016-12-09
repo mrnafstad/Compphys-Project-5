@@ -60,7 +60,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 	FILE *fp;
 	fp = fopen("VerletTest.txt", "w+");
 
-	int counter = 0; 
+	int counter1 = 0, counter2 = 0; 
 
 	if(energy) printf("Time       Total Kinetic Energy  Total Potential Energy    Total Energy\n");
 
@@ -123,7 +123,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 
 		// Prints energies to screen if required
 		if(energy){
-			if(counter == 0){
+			if(counter1 == 0){
 				KineticEnergySystem();
 				PotentialEnergySystem(0.0);
 				AngularMomentumSystem();
@@ -132,8 +132,12 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 		}
 
 		//Makes sure that the energy above only prints every 1/10th iteration 
-		counter += 1;
-		if(N/counter == 10) counter = 0;
+		counter1 += 1;
+		counter2 += 1;
+		if(counter2/counter1 == 10) {
+			counter2 = 0;
+			counter1 = 0;
+		}
 		time += dt;
 
 	}
