@@ -4,8 +4,8 @@ from numpy import *
 def n(r_val, n0, r0):
 	return n0/(1 + (r_val/r0)**4)
 
-n0_1 = 0.04;  n0_2 = 0.2;  n0_3 = 0.25
-r0_1 = 10;   r0_2 = 7 ;  r0_3 = 7
+n0_1 = 0.04;  n0_2 = 0.2;  n0_3 = 0.2
+r0_1 = 10;   r0_2 = 7 ;  r0_3 = 8
 
 r_val = linspace(0, 20, 1000)
 

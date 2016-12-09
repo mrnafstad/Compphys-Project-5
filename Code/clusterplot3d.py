@@ -10,6 +10,7 @@ galaxies = (num -1)/3       # Three coordinates per galaxies
 
 x = zeros(galaxies); y = zeros(galaxies) ; z = zeros(galaxies)
 
+
 fig = figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -29,7 +30,13 @@ for line in f:
 	ax.set_xlim([-20, 20])
 	ax.set_ylim([-20, 20])
 	ax.set_zlim([-20, 20])
+	ax.set_xlabel("x (ly)")
+	ax.set_ylabel("y (ly)")
+	ax.set_zlabel("z (ly)")
 	ax.legend(["t = %.2f" % t])
 	pause(0.001)
+
+
+
 
 f.close()
