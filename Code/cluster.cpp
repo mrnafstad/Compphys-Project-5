@@ -115,7 +115,7 @@ int main ( int argc, char * argv[] )
 	}
 	shell_size = R0/(double)100;
 	bool energy = true;
-	bool smoothing = true;
+	bool smoothing = false;
 
 	solver system_VV(R0);
 

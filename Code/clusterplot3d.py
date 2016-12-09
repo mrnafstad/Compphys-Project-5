@@ -2,7 +2,10 @@ from matplotlib.pylab import *
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import *
 
+
 f = open("VerletTest.txt")
+#f = open("clusterwithsmooth.txt")
+#f = open("clusterwithout.txt")
 
 words = f.readline().split()
 num =  len(words) # Numbers per line
@@ -34,7 +37,14 @@ for line in f:
 	ax.set_ylabel("y (ly)")
 	ax.set_zlabel("z (ly)")
 	ax.legend(["t = %.2f" % t])
-	pause(0.001)
+	if t < 0.02:
+		pause(10)
+	elif t == 1:
+		pause(10)
+	elif t == 3:
+		pause(10)
+	else:
+		pause(0.001)
 
 
 
