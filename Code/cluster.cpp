@@ -34,13 +34,17 @@ double gaussian_deviate(long * idum)
 	} 
 } // end function for gaussian deviates
 
-void density_profile( solver allplanets, double shell_size, double R0 )
+void density_profile( solver allplanets, double shell_size, int N, double R0 )
 {
 	int thisshell, total = 0;
 	double massthis;
 	double r = 0;
+
 	FILE *dens;
-	dens = fopen("density_profile.txt", "w+");
+	char DensOut[30];
+	snprintf(DensOut, sizeof(DensOut), "density_profile_%i.txt", N);
+
+	dens = fopen(DensOut, "w+");
 
 	while ( r < R0) {
 		thisshell = 0;
@@ -136,7 +140,7 @@ int main ( int argc, char * argv[] )
 	system_VV.GravitationalConstant();
 	system_VV.velVerlet( dim, dt, final_time, N, energy, smoothing);
 	//printf("%lf\n", system_VV.all_planets[0].position[0]);
-	density_profile( system_VV, shell_size, R0);
+	density_profile( system_VV, shell_size, N, R0);
 	virial(system_VV);
 	return 0;
 }
