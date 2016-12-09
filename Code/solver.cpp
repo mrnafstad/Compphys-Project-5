@@ -75,7 +75,15 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 
 	//Starts loop
 	while(time < final_time){
-
+		// Prints energies to screen if required
+		if(energy){
+			if(counter == 0){
+				KineticEnergySystem();
+				PotentialEnergySystem(0.0);
+				AngularMomentumSystem();
+				printf("%f      %e        %e            %e\n", time, totalKinetic, totalPotential, totalPotential+totalKinetic);
+			}
+		}
 
 		fprintf(fp, "%f ", time);
 		
@@ -121,15 +129,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 		fprintf(fp, "\n");
 
 
-		// Prints energies to screen if required
-		if(energy){
-			if(counter == 0){
-				KineticEnergySystem();
-				PotentialEnergySystem(0.0);
-				AngularMomentumSystem();
-				printf("%f      %e        %e            %e\n", time, totalKinetic, totalPotential, totalPotential+totalKinetic);
-			}
-		}
+
 
 		//Makes sure that the energy above only prints every 1/10th iteration 
 		counter += 1;
