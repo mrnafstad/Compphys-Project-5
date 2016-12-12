@@ -132,15 +132,11 @@ int main ( int argc, char * argv[] )
 	shell_size = R0/(double)100;
 
 	bool energy = true;
-<<<<<<< HEAD
 	bool smoothing = true;
 	bool constantMass = true;
 
 	double M0 = 1000;  // solar masses 
 	double mu = M0/N;  // average mass per particle
-=======
-	bool smoothing = false;
->>>>>>> eb4e2444095254ab47471ac2a9f0ae4299334cc4
 
 	solver system_VV(R0);
 
@@ -172,5 +168,6 @@ int main ( int argc, char * argv[] )
 	//printf("%lf\n", system_VV.all_planets[0].position[0]);
 	density_profile( system_VV, shell_size, N, R0);
 	virial(system_VV);
+
 	return 0;
 }
