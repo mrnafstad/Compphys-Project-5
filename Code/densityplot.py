@@ -4,7 +4,7 @@ from numpy import *
 def n(r_val, n0, r0):
 	return n0/(1 + (r_val/r0)**4)
 
-n0_1 = 0.03;  n0_2 = 0.15;  n0_3 = 0.25
+n0_1 = 3;  n0_2 = 15;  n0_3 = 25
 r0_1 = 10;   r0_2 = 7 ;  r0_3 = 6.5
 
 r_val = linspace(0, 20, 1000)
@@ -46,21 +46,21 @@ ylabel("Density")
 legend(["N = 100", "N = 500", "N = 1000"])
 show()
 
-plot(r1, density1/len(r1))
+plot(r1, density1)#/len(r1))
 hold('on')
 plot(r_val, n(r_val, n0_1, r0_1))
 xlabel("R")
 ylabel("Density")
 show()
 
-plot(r2, density2/len(r2))
+plot(r2, density2)#/len(r2))
 hold('on')
 plot(r_val, n(r_val, n0_2, r0_2))
 xlabel("R")
 ylabel("Density")
 show()
 
-plot(r3, density3/len(r3))
+plot(r3, density3)#/len(r3))
 hold('on')
 plot(r_val, n(r_val, n0_3, r0_3))
 xlabel("R")
