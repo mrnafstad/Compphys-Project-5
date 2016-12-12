@@ -168,5 +168,6 @@ int main ( int argc, char * argv[] )
 	//printf("%lf\n", system_VV.all_planets[0].position[0]);
 	density_profile( system_VV, shell_size, N, R0);
 	virial(system_VV);
+
 	return 0;
 }
