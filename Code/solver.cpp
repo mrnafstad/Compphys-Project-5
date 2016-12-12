@@ -152,7 +152,7 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
         }
     }
     printf("We have lost %i object(s) \n", lost_particles);
-    printf("%i lost objects cost us %e ", lost_particles, lost_energy);
+    printf("%i lost objects cost us %e \n", lost_particles, lost_energy);
 	//closes file
 	fclose(fp);
 }
