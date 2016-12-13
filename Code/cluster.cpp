@@ -118,7 +118,9 @@ void virial ( solver allplanets )
 	}
 	double boundplanets = N - lost;
 
-	printf("%f %f \n", (double)kav/boundplanets, -(double)uav/(double)boundplanets/2.0/2.0);
+	printf("Virial theorem: \n");
+	printf("     <K>        1/2<U>\n");
+	printf("%f   %f \n", (double)kav/boundplanets, -(double)uav/(double)boundplanets/2.0/2.0);
 	//We divide by 2.0 twice, once for the virial theorem, and once since all potential energies is counted twice
 }
 
