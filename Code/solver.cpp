@@ -162,7 +162,7 @@ void solver::GravitationalForce(planet &current, planet &other, double &Fx, doub
 
     // Calculate relative distance between current planet and all other planets
     double relative_distance[3];
-    double epsilon = 0.15;
+    double epsilon = 0.1;
 
     for(int j = 0; j < 3; j++) relative_distance[j] = current.position[j]-other.position[j];
     double r = current.distance(other);

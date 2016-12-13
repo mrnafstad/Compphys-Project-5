@@ -4,17 +4,18 @@ from numpy import *
 def n(r_val, n0, r0):
 	return n0/(1 + (r_val/r0)**4)
 
-n0_1 = 3;  n0_2 = 15;  n0_3 = 25
-r0_1 = 10;   r0_2 = 7 ;  r0_3 = 6.5
+n0_1 = 3;  n0_2 = 16;  n0_3 = 25;   n0_4 = 45
+r0_1 = 10;   r0_2 = 6.5 ;  r0_3 = 6;  r0_4 = 7
 
 r_val = linspace(0, 20, 1000)
 
 f1 = open("density_profile_100.txt")
 f2 = open("density_profile_500.txt")
 f3 = open("density_profile_1000.txt")
+f4 = open("density_profile_2000.txt")
 
-r1 = []; r2 = []; r3 = []
-density1 = []; density2 = []; density3 = []
+r1 = []; r2 = []; r3 = []; r4 = []
+density1 = []; density2 = []; density3 = []; density4 = [] 
 
 for line in f1:
 	words = line.split()
@@ -31,19 +32,27 @@ for line in f3:
 	r3.append(float(words[0]))
 	density3.append(float(words[1]))
 
+for line in f4:
+	words = line.split()
+	r4.append(float(words[0]))
+	density4.append(float(words[1]))
+
 r1 = array(r1); density1 = array(density1)
 r2 = array(r2); density2 = array(density2)
 r3 = array(r3); density3 = array(density3)
+r4 = array(r4); density4 = array(density4)
 
-plot(r1, density1/sum(density1))
+plot(r1, density1)
 hold('on')
-plot(r2, density2/sum(density2))
+plot(r2, density2)
 hold('on')
-plot(r3, density3/sum(density3))
+plot(r3, density3)
+hold('on')
+plot(r4, density4)
 #plot(r_val, n(r_val)/len(r))
 xlabel("R")
 ylabel("Density")
-legend(["N = 100", "N = 500", "N = 1000"])
+legend(["N = 100", "N = 500", "N = 1000", "N = 2000"])
 show()
 
 plot(r1, density1)#/len(r1))
@@ -63,6 +72,13 @@ show()
 plot(r3, density3)#/len(r3))
 hold('on')
 plot(r_val, n(r_val, n0_3, r0_3))
+xlabel("R")
+ylabel("Density")
+show()
+
+plot(r4, density4)#/len(r3))
+hold('on')
+plot(r_val, n(r_val, n0_4, r0_4))
 xlabel("R")
 ylabel("Density")
 show()
