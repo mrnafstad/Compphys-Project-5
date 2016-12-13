@@ -80,7 +80,6 @@ void solver::velVerlet( int dim, double dt, double final_time, int N, bool energ
 			if(counter == 0){
 				KineticEnergySystem();
 				PotentialEnergySystem(0.0);
-				AngularMomentumSystem();
 				printf("%f      %e        %e            %e\n", time, totalKinetic, totalPotential, totalPotential+totalKinetic);
 			}
 		}
@@ -168,13 +167,13 @@ void solver::GravitationalForce(planet &current, planet &other, double &Fx, doub
     double r = current.distance(other);
 
 	if(smoothing){
-	    // Calculate the forces in each direction
+	    // Calculate the forces in each direction, now with a correction
 	    Fx -= this->G*current.mass*other.mass*relative_distance[0]/((r*r*r) + epsilon*epsilon);
 	    Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r) + epsilon*epsilon);
 	    Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r) + epsilon*epsilon);
 	}
 	else{
-			    // Calculate the forces in each direction
+		// Calculate the forces in each direction, normal newtonian law
 	    Fx -= this->G*current.mass*other.mass*relative_distance[0]/((r*r*r));
 	    Fy -= this->G*current.mass*other.mass*relative_distance[1]/((r*r*r));
 	    Fz -= this->G*current.mass*other.mass*relative_distance[2]/((r*r*r));
@@ -182,6 +181,7 @@ void solver::GravitationalForce(planet &current, planet &other, double &Fx, doub
 
 }
 
+//Calculates the total kinetic energy of the system
 void solver::KineticEnergySystem()
 {
     totalKinetic = 0;
@@ -192,6 +192,7 @@ void solver::KineticEnergySystem()
     }
 }
 
+// Calculates the total potential energy of the system
 void solver::PotentialEnergySystem(double epsilon)
 {
     totalPotential = 0;
@@ -199,6 +200,7 @@ void solver::PotentialEnergySystem(double epsilon)
         planet &Current = all_planets[nr];
         Current.potential = 0;
     }
+    // Making sure that the potential between two planets aren't counted twice
     for(int nr1=0;nr1<total_planets;nr1++){
         planet &Current = all_planets[nr1];
         for(int nr2=nr1+1;nr2<total_planets;nr2++){
@@ -207,14 +209,5 @@ void solver::PotentialEnergySystem(double epsilon)
             Other.potential += Other.PotentialEnergy(Current,G,epsilon);
         	totalPotential += Current.potential;
         }
-    }
-}
-
-void solver::AngularMomentumSystem(){
-	totalAngularMomentum = 0;
-    for(int nr=0;nr<total_planets;nr++){
-        planet &Current = all_planets[nr];
-        Current.ang_mom = Current.AngularMomentum();
-        totalAngularMomentum += Current.ang_mom;
     }
 }

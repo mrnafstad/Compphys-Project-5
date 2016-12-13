@@ -30,7 +30,6 @@ public:
     double Acceleration(planet otherPlanet, double Gconst);
     double KineticEnergy();
     double PotentialEnergy(planet &otherPlanet, double Gconst, double epsilon);
-	double AngularMomentum();
 };
 
 #endif //PLANET_H

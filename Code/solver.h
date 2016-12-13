@@ -33,7 +33,6 @@ public:
     void GravitationalForce(planet &current, planet &other, double &Fx, double &Fy, double &Fz, bool smoothing);
     void KineticEnergySystem();
     void PotentialEnergySystem(double epsilon);
-    void AngularMomentumSystem();
 };
 
 #endif //SOLVER_H

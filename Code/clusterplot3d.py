@@ -20,6 +20,7 @@ ax = fig.add_subplot(111, projection='3d')
 ion()
 show()
 
+# Plots the positions of the particles (3D) continously, creating an animation
 for line in f:
 	words = line.split()
 	t = float(words[0])

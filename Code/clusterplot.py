@@ -3,8 +3,6 @@ from numpy import *
 
 f = open("VerletTest.txt")
 
-#lines = f.readlines()
-
 words = f.readline().split()
 num =  len(words) # Numbers per line
 galaxies = (num -1)/3       # Three coordinates per galaxies
@@ -14,6 +12,7 @@ x = zeros(galaxies); y = zeros(galaxies)
 ion()
 show()
 
+# Plots the positions of the particles in the xy-plane continously, creating an animation
 for line in f:
 	words = line.split()
 	t = float(words[0])
